@@ -1,2 +1,2 @@
 # Javascript-SQL
-Tugas 1st
+Tugas Javascript dan SQL.
