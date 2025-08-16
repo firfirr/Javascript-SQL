@@ -1,25 +1,25 @@
 create database db_blog_posts;
 
 use db_blog_posts;
-
+--
 create table USERS (
-id integer primary key,
+id int primary key,
 name varchar(100) not null
 );
-
+--
 create table CATEGORIES (
-id integer primary key,
+id int primary key,
 name varchar(100) not null
 );
-
+--
 create table BLOG_POSTS(
-id integer primary key,
+id int primary key,
 title varchar(100) not null,
 body text,
-author_id integer,
+author_id int,
 foreign key(author_id) references USERS(id)
 );
-
+--
 create table POST_CATEGORIES(
 post_id int,
 category_id integer,
@@ -90,14 +90,44 @@ join
 join users u on u.id = b.author_id
 where
  c.name = "basic";
+ 
+ 
+ -- ###
  -- TASK 6
- select
-	c.name CategoryName,
-    b.title PostTitle,
-    b.body body
- from
- users u,
- categories c,
- blog_posts b
- where 
- u.name = "robert" and u.name = "frank";
+select
+    c.name category_name,
+    p.title post_title,
+    p.body
+from BLOG_POSTS p
+join USERS u on p.author_id = u.id
+join POST_CATEGORIES pc on p.id = pc.post_id
+join CATEGORIES c on pc.category_id = c.id
+where u.name in ('Robert', 'Frank');
+
+-- TASK 7
+select 
+    u.name  AuthorName,
+    c.name  CategoryName
+from BLOG_POSTS p
+join USERS u on p.author_id = u.id
+join POST_CATEGORIES pc on p.id = pc.post_id
+join CATEGORIES c on pc.category_id = c.id
+where p.id in (
+    select post_id
+    from POST_CATEGORIES
+    group by post_id
+    having count(category_id) >= 2
+);
+
+-- TASK 8
+SELECT 
+    u.name AuthorName,
+    p.title PostTitle
+FROM BLOG_POSTS p
+JOIN USERS u ON p.author_id = u.id
+WHERE p.id IN (
+    SELECT post_id
+    FROM POST_CATEGORIES
+    GROUP BY post_id
+    HAVING COUNT(category_id) = 1
+);
